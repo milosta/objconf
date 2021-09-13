@@ -16,26 +16,25 @@ class ExtraVals(Enum):
 
 class Config:
     @classmethod
-    def load_yaml(cls, stream):
-        cls.load_from_dict(yaml.load(stream))
+    def load_yaml(cls, stream, loader=yaml.SafeLoader):
+        cls.load_from_dict(yaml.load(stream, loader))
 
     @classmethod
     def load_from_dict(cls, data: Dict, extra_vals: ExtraVals = ExtraVals.WARNING):
         config = cls()
         data_keys = set(data.keys())
 
-        for cls_attr in inspect.getmembers(cls, lambda x: isinstance(x, attributes.Attribute)):
-            attr = getattr(config, cls_attr.__name__)
+        for attr_name, attr in inspect.getmembers(
+                cls, lambda x: isinstance(x, attributes.Attribute)):
             value = data.get(attr.key, attr.default)
             if value == attributes.UNDEFINED:
                 raise RuntimeError(f'Missing required attribute {attr.key}')
 
-            attr = value
             data_keys.remove(attr.key)
+            setattr(config, attr_name, value)
 
         if data_keys:
             cls.handle_extra_vals(extra_vals, data_keys)
-
         return config
 
     @staticmethod
