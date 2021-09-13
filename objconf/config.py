@@ -16,8 +16,8 @@ class ExtraVals(Enum):
 
 class Config:
     @classmethod
-    def load_yaml(cls, stream, loader=yaml.SafeLoader):
-        cls.load_from_dict(yaml.load(stream, loader))
+    def load_yaml(cls, stream, loader=yaml.SafeLoader, *args, **kwargs):
+        return cls.load_from_dict(yaml.load(stream, loader), *args, **kwargs)
 
     @classmethod
     def load_from_dict(cls, data: Dict, extra_vals: ExtraVals = ExtraVals.WARNING):
@@ -30,8 +30,8 @@ class Config:
             if value == attributes.UNDEFINED:
                 raise RuntimeError(f'Missing required attribute {attr.key}')
 
-            data_keys.remove(attr.key)
             setattr(config, attr_name, value)
+            data_keys.discard(attr.key)
 
         if data_keys:
             cls.handle_extra_vals(extra_vals, data_keys)
