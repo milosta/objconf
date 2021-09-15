@@ -12,6 +12,6 @@ setup(
     packages=find_packages(exclude=['docs', 'tests']),
     python_requires='>=3.6',
     install_requires=[
-        # TODO
+        'yaml',
     ],
 )
