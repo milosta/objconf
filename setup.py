@@ -14,4 +14,7 @@ setup(
     install_requires=[
         'yaml',
     ],
+    tests_require=[
+        'pytest',
+    ],
 )

@@ -1,4 +1,5 @@
 from collections import Callable
+from typing import Optional
 
 
 class UNDEFINED:
@@ -9,12 +10,17 @@ class UNDEFINED:
 class Attribute:
     PREFIX = 'objconf_'
 
-    __slots__ = ('key', 'type_', 'default', 'validator', 'transformer', 'name', 'storage_name')
+    __slots__ = ('type_', 'default', 'key', 'validator', 'transformer', 'name', 'storage_name')
 
-    def __init__(self, key: str, type_: Callable, default=UNDEFINED, validator=None, transformer=None):
-        self.key = key
+    def __init__(self,
+                 type_: Callable,
+                 default=UNDEFINED,
+                 key: Optional[str] = None,
+                 validator=None,
+                 transformer=None):
         self.type_ = type_
         self.default = default
+        self.key = key
         self.validator = validator
         self.transformer = transformer
         self.name = None
@@ -22,6 +28,8 @@ class Attribute:
 
     def __set_name__(self, owner, name):
         self.name = name
+        if self.key is None:
+            self.key = name
         self.storage_name = self.PREFIX + name
 
     def __set__(self, instance, value):
