@@ -1,5 +1,8 @@
 import pytest
 
+from objconf.attributes import Attribute
+from objconf.config import ExtraVals
+
 
 class TestYaml:
     def test_from_yaml(self, config_yaml, TestConfig):
@@ -11,6 +14,22 @@ class TestJson:
     def test_from_yaml(self, config_json, TestConfig):
         config = TestConfig.from_yaml(config_json)
         config.assert_config()
+
+
+class TestIni:
+    def test_from_ini_one_section(self, config_ini, TestConfig):
+        del TestConfig.list_attr
+        
+        config = TestConfig.from_ini(config_ini, ['default'])
+        config.assert_config(ini=True)
+
+    def test_from_ini_all_sections(self, config_ini, TestConfig):
+        del TestConfig.list_attr
+        TestConfig.second_str = Attribute(str)
+        TestConfig.second_str.__set_name__(TestConfig, 'second_str')
+
+        config = TestConfig.from_ini(config_ini)
+        config.assert_config(ini=True)
 
 
 class TestConfig:

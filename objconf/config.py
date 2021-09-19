@@ -1,8 +1,9 @@
+import configparser
 import inspect
 import json
 import warnings
 from enum import Enum, auto
-from typing import Dict, Set, TextIO, Any
+from typing import Dict, Set, TextIO, Any, Optional, Iterable
 
 import yaml
 
@@ -23,6 +24,18 @@ class Config:
     @classmethod
     def from_json(cls, stream: TextIO, *args, **kwargs):
         return cls.from_dict(json.load(stream), *args, **kwargs)
+
+    @classmethod
+    def from_ini(cls, stream, sections: Optional[Iterable] = None, *args, **kwargs):
+        cfgparser = configparser.ConfigParser()
+        cfgparser.read_file(stream)
+        if sections is None:
+            sections = cfgparser.sections()
+        data = {}
+        for section in sections:
+            data.update(cfgparser[section])
+
+        return cls.from_dict(data, *args, **kwargs)
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any], extra_vals: ExtraVals = ExtraVals.WARNING):

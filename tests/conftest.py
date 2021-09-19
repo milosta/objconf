@@ -26,6 +26,12 @@ def config_json(config_yaml):
 
 
 @pytest.fixture
+def config_ini():
+    with open(data_path_join('test-config.ini')) as f:
+        return io.StringIO(f.read())
+
+
+@pytest.fixture
 def TestConfig():
     class TestConfiguration(Config):
         string_attr = Attribute(str)
@@ -37,11 +43,12 @@ def TestConfig():
 
         bool_attr = Attribute(bool)
 
-        def assert_config(self):
+        def assert_config(self, ini=False):
             assert self.string_attr == 'string_attribute value'
             assert self.string_attr_default == self.__class__.string_attr_default.default
             assert self.int_attr_key == 12345
-            assert self.list_attr == list(range(1, 6))
             assert self.bool_attr is True
+            if not ini:
+                assert self.list_attr == list(range(1, 6))
 
     return TestConfiguration
