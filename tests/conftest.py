@@ -4,6 +4,9 @@ import pytest
 import json
 import yaml
 
+from objconf.config import Config
+from objconf.attributes import Attribute
+
 TESTING_DATA_DIR = 'assets'
 
 
@@ -20,3 +23,25 @@ def config_yaml():
 @pytest.fixture
 def config_json(config_yaml):
     return io.StringIO(json.dumps(yaml.safe_load(config_yaml)))
+
+
+@pytest.fixture
+def TestConfig():
+    class TestConfiguration(Config):
+        string_attr = Attribute(str)
+        string_attr_default = Attribute(str, default='Default string')
+
+        int_attr_key = Attribute(int, key='int_attr')
+
+        list_attr = Attribute(list)
+
+        bool_attr = Attribute(bool)
+
+        def assert_config(self):
+            assert self.string_attr == 'string_attribute value'
+            assert self.string_attr_default == self.__class__.string_attr_default.default
+            assert self.int_attr_key == 12345
+            assert self.list_attr == list(range(1, 6))
+            assert self.bool_attr is True
+
+    return TestConfiguration
