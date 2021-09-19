@@ -30,3 +30,10 @@ class TestConfig:
         TestConfig.bool_attr.validator = lambda x: False
         with pytest.raises(ValueError):
             TestConfig.from_yaml(config_yaml)
+
+    def test_transformer(self, config_yaml, TestConfig):
+        transformed = 'transformed'
+        TestConfig.string_attr.transformer = lambda x: transformed
+        TestConfig.string_attr.validator = lambda x: x == transformed
+        config = TestConfig.from_yaml(config_yaml)
+        assert config.string_attr == transformed
