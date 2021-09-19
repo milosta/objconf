@@ -2,7 +2,7 @@ import inspect
 import json
 import warnings
 from enum import Enum, auto
-from typing import Dict, Set
+from typing import Dict, Set, TextIO, Any
 
 import yaml
 
@@ -17,15 +17,15 @@ class ExtraVals(Enum):
 
 class Config:
     @classmethod
-    def from_yaml(cls, stream, loader=yaml.SafeLoader, *args, **kwargs):
+    def from_yaml(cls, stream: TextIO, loader=yaml.SafeLoader, *args, **kwargs):
         return cls.from_dict(yaml.load(stream, loader), *args, **kwargs)
 
     @classmethod
-    def from_json(cls, stream, *args, **kwargs):
+    def from_json(cls, stream: TextIO, *args, **kwargs):
         return cls.from_dict(json.load(stream), *args, **kwargs)
 
     @classmethod
-    def from_dict(cls, data: Dict, extra_vals: ExtraVals = ExtraVals.WARNING):
+    def from_dict(cls, data: Dict[str, Any], extra_vals: ExtraVals = ExtraVals.WARNING):
         config = cls()
         data_keys = set(data.keys())
 

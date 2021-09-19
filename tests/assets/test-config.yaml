@@ -1,0 +1,9 @@
+string_attr: string_attribute value
+int_attr: 12345
+list_attr:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+bool_attr: yes
