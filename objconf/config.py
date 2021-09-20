@@ -18,15 +18,16 @@ class ExtraVals(Enum):
 
 class Config:
     @classmethod
-    def from_yaml(cls, stream: TextIO, loader=yaml.SafeLoader, *args, **kwargs):
+    def from_yaml(cls, stream: TextIO, loader=yaml.SafeLoader, *args, **kwargs) -> 'Config':
         return cls.from_dict(yaml.load(stream, loader), *args, **kwargs)
 
     @classmethod
-    def from_json(cls, stream: TextIO, *args, **kwargs):
+    def from_json(cls, stream: TextIO, *args, **kwargs) -> 'Config':
         return cls.from_dict(json.load(stream), *args, **kwargs)
 
     @classmethod
-    def from_ini(cls, stream, sections: Optional[Iterable] = None, *args, **kwargs):
+    def from_ini(cls, stream: TextIO, sections: Optional[Iterable[str]] = None,
+                 *args, **kwargs) -> 'Config':
         cfgparser = configparser.ConfigParser()
         cfgparser.read_file(stream)
         if sections is None:
@@ -38,7 +39,7 @@ class Config:
         return cls.from_dict(data, *args, **kwargs)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any], extra_vals: ExtraVals = ExtraVals.WARNING):
+    def from_dict(cls, data: Dict[str, Any], extra_vals: ExtraVals = ExtraVals.WARNING) -> 'Config':
         config = cls()
         data_keys = set(data.keys())
 
@@ -56,7 +57,7 @@ class Config:
         return config
 
     @staticmethod
-    def handle_extra_vals(action: ExtraVals, extras: Set) -> None:
+    def handle_extra_vals(action: ExtraVals, extras: Set[str]) -> None:
         if action == ExtraVals.IGNORE:
             return
         msg = f'Found unrecognised configuration values: {extras}'

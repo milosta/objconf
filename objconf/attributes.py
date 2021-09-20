@@ -1,4 +1,4 @@
-from typing import Optional, Callable
+from typing import Optional, Callable, Any
 
 
 class UNDEFINED:
@@ -12,11 +12,11 @@ class Attribute:
     __slots__ = ('type_', 'default', 'key', 'validator', 'transformer', 'name', 'storage_name')
 
     def __init__(self,
-                 type_: Callable,
-                 default=UNDEFINED,
+                 type_: Callable[[Any], Any],
+                 default: Any = UNDEFINED,
                  key: Optional[str] = None,
-                 validator=None,
-                 transformer=None):
+                 validator: Optional[Callable[[Any], bool]] = None,
+                 transformer: Optional[Callable[[Any], Any]] = None):
         self.type_ = type_
         self.default = default
         self.key = key
@@ -44,5 +44,5 @@ class Attribute:
             return self
         return getattr(instance, self.storage_name)
 
-    def type_conversion(self, value):
+    def type_conversion(self, value: Any) -> Any:
         return self.type_(value)
