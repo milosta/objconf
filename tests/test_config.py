@@ -1,7 +1,9 @@
+import io
+
 import pytest
 
 from objconf.attributes import Attribute
-from objconf.config import ExtraVals
+from objconf.config import Config
 
 
 class TestYaml:
@@ -19,7 +21,7 @@ class TestJson:
 class TestIni:
     def test_from_ini_one_section(self, config_ini, TestConfig):
         del TestConfig.list_attr
-        
+
         config = TestConfig.from_ini(config_ini, ['default'])
         config.assert_config(ini=True)
 
@@ -30,6 +32,18 @@ class TestIni:
 
         config = TestConfig.from_ini(config_ini)
         config.assert_config(ini=True)
+
+    def test_from_ini_interpolation(self):
+        config_ini = io.StringIO('[default]\n'
+                                 'string_attr=string_attr\n'
+                                 'interpolation=%(string_attr)s\n')
+
+        class InterpolationConfig(Config):
+            string_attr = Attribute(str)
+            interpolation = Attribute(str)
+
+        config = InterpolationConfig.from_ini(config_ini)
+        assert config.string_attr == config.interpolation
 
 
 class TestConfig:
