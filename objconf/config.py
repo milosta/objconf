@@ -18,25 +18,27 @@ class ExtraVals(Enum):
 
 class Config:
     @classmethod
-    def from_yaml(cls, stream: TextIO, loader=yaml.SafeLoader, *args, **kwargs) -> 'Config':
-        return cls.from_dict(yaml.load(stream, loader), *args, **kwargs)
+    def from_yaml(cls, stream: TextIO, loader=yaml.SafeLoader,
+                  extra_vals: ExtraVals = ExtraVals.WARNING) -> 'Config':
+        return cls.from_dict(yaml.load(stream, loader), extra_vals)
 
     @classmethod
-    def from_json(cls, stream: TextIO, *args, **kwargs) -> 'Config':
-        return cls.from_dict(json.load(stream), *args, **kwargs)
+    def from_json(cls, stream: TextIO, extra_vals: ExtraVals = ExtraVals.WARNING,
+                  **parser_kwargs) -> 'Config':
+        return cls.from_dict(json.load(stream, **parser_kwargs), extra_vals)
 
     @classmethod
     def from_ini(cls, stream: TextIO, sections: Optional[Iterable[str]] = None,
-                 *args, **kwargs) -> 'Config':
-        cfgparser = configparser.ConfigParser()
+                 extra_vals: ExtraVals = ExtraVals.WARNING, **parser_kwargs) -> 'Config':
+        cfgparser = configparser.ConfigParser(**parser_kwargs)
         cfgparser.read_file(stream)
         if sections is None:
             sections = cfgparser.sections()
-        data = {}
+        data = {}  # type: Dict[str, Any]
         for section in sections:
             data.update(cfgparser[section])
 
-        return cls.from_dict(data, *args, **kwargs)
+        return cls.from_dict(data, extra_vals)
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any], extra_vals: ExtraVals = ExtraVals.WARNING) -> 'Config':
