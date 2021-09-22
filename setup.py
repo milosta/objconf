@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 test_dependencies = [
-    'coverage',
     'pytest',
+    'flake8',
 ]
 extras = {
     'tests': test_dependencies,
