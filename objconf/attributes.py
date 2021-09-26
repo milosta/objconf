@@ -11,7 +11,7 @@ class Attribute:
     Attribute store the value in the owning class (Config) instance.
     Constructor has the following parameters:
     - ``type_``: The only required parameter - type of the attribute
-        (`str`, `int`, `list`(if supported), …).
+        (`bool`, `str`, `int`, `list`(if supported), …).
         It is a callable that converts the value to the correct type.
         Some types might not be supported; e.g. the Python ini-like format
         does not support lists by default.
@@ -19,8 +19,9 @@ class Attribute:
     - ``key``: Specify key in configuration file if different from attribute name.
     - ``validator``: Callable that takes the configuration value and checks whether
         it is valid - return `True`, or not - return `False`.
-    - ``transformer``: Transform the value from configuration file. This happens before
-        the validation. Can be used for example for transforming paths
+    - ``transformer``: Transform the value from configuration file. This happens
+        after the type conversion but before the validation.
+        Can be used for example for transforming paths
         (expanding user home dire, changing relative paths to absolute, …).
     """
     PREFIX = 'objconf_'

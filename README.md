@@ -40,14 +40,17 @@ Inherit from this class when defining your application configuration.
 ```python
 from objconf import Config, Attribute
 
-
+# Define configuration
 class AppConfig(Config):
-    string_attr = Attribute(str)
-    int_attr = Attribute(int, default=5)
-
-
-with open('config.yaml') as f:  # Similarly for other configuration formats
-    app_config = AppConfig.load_yaml
+    simple_string_attr = Attribute(str)
+    int_attr_with_default = Attribute(int, default=5)
+    bool_attr_different_key = Attribute(bool, key='actual_bool_key')
+    int_over_ten = Attribute(int, validator=lambda x: x > 10)
+    upper_str_attr = Attribute(str, transformer=str.upper)
+    
+# Load configuration
+with open('config.yaml') as f:  # Call appropriate load_<format> factory method
+    app_config = AppConfig.load_yaml(f)
 ```
 
 #### Loading configuration
@@ -75,7 +78,7 @@ the behaviour of underlying parser.
 Attribute store the value in the owning class (Config) instance.
 Constructor has the following parameters:
 - ``type_``: The only required parameter - type of the attribute
-    (`str`, `int`, `list`(if supported), …).
+    (`bool`, `str`, `int`, `list`(if supported), …).
     It is a callable that converts the value to the correct type.
     Some types might not be supported; e.g. the Python ini-like format
     does not support lists by default.
@@ -83,8 +86,9 @@ Constructor has the following parameters:
 - ``key``: Specify key in configuration file if different from attribute name.
 - ``validator``: Callable that takes the configuration value and checks whether 
     it is valid - return `True`, or not - return `False`.
-- ``transformer``: Transform the value from configuration file. This happens before
-    the validation. Can be used for example for transforming paths
+- ``transformer``: Transform the value from configuration file. This happens
+    after the type conversion but before the validation.
+    Can be used for example for transforming paths
     (expanding user home dire, changing relative paths to absolute, …).
 
 ## Tests
