@@ -18,17 +18,17 @@ class ExtraVals(Enum):
 
 class Config:
     @classmethod
-    def from_yaml(cls, stream: TextIO, loader=yaml.SafeLoader,
+    def load_yaml(cls, stream: TextIO, loader=yaml.SafeLoader,
                   extra_vals: ExtraVals = ExtraVals.WARNING) -> 'Config':
-        return cls.from_dict(yaml.load(stream, loader), extra_vals)
+        return cls.load_dict(yaml.load(stream, loader), extra_vals)
 
     @classmethod
-    def from_json(cls, stream: TextIO, extra_vals: ExtraVals = ExtraVals.WARNING,
+    def load_json(cls, stream: TextIO, extra_vals: ExtraVals = ExtraVals.WARNING,
                   **parser_kwargs) -> 'Config':
-        return cls.from_dict(json.load(stream, **parser_kwargs), extra_vals)
+        return cls.load_dict(json.load(stream, **parser_kwargs), extra_vals)
 
     @classmethod
-    def from_ini(cls, stream: TextIO, sections: Optional[Iterable[str]] = None,
+    def load_ini(cls, stream: TextIO, sections: Optional[Iterable[str]] = None,
                  extra_vals: ExtraVals = ExtraVals.WARNING, **parser_kwargs) -> 'Config':
         cfgparser = configparser.ConfigParser(**parser_kwargs)
         cfgparser.read_file(stream)
@@ -38,10 +38,10 @@ class Config:
         for section in sections:
             data.update(cfgparser[section])
 
-        return cls.from_dict(data, extra_vals)
+        return cls.load_dict(data, extra_vals)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any], extra_vals: ExtraVals = ExtraVals.WARNING) -> 'Config':
+    def load_dict(cls, data: Dict[str, Any], extra_vals: ExtraVals = ExtraVals.WARNING) -> 'Config':
         config = cls()
         data_keys = set(data.keys())
 
