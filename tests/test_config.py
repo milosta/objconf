@@ -2,8 +2,8 @@ import io
 
 import pytest
 
-from objconf.attributes import Attribute
-from objconf.config import Config
+from objconf import Attribute
+from objconf import Config
 
 
 class TestYaml:

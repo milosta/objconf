@@ -4,8 +4,8 @@ import pytest
 import json
 import yaml
 
-from objconf.config import Config
-from objconf.attributes import Attribute
+from objconf import Config
+from objconf import Attribute
 
 TESTING_DATA_DIR = 'assets'
 
