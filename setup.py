@@ -10,7 +10,7 @@ extras = {
 
 setup(
     name='objconf',
-    version='0.2.0',
+    version='0.3.0',
     description='Object configuration for Python projects',
     long_description=open('README.md').read(),
     url='https://github.com/milosta/objconf',
