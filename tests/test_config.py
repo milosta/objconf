@@ -1,5 +1,4 @@
 import io
-
 import pytest
 
 from objconf import Attribute
@@ -70,3 +69,26 @@ class TestConfig:
         TestConfig.string_attr.validator = lambda x: x == transformed
         config = TestConfig.load_yaml(config_yaml)
         assert config.string_attr == transformed
+
+
+class TestDocumentationExamples:
+    def test_config_example(self):
+        # Define configuration
+        class AppConfig(Config):
+            simple_string_attr = Attribute(str)
+            int_attr_with_default = Attribute(int, default=5)
+            bool_attr_different_key = Attribute(bool, key='actual_bool_key')
+            int_over_ten = Attribute(int, validator=lambda x: x > 10)
+            upper_str_attr = Attribute(str, transformer=str.upper)
+
+        # Load configuration
+        yaml_config = '''
+        simple_string_attr: string_value
+        actual_bool_key: True
+        int_over_ten: 42
+        upper_str_attr: lower
+        '''
+        app_config = AppConfig.load_yaml(io.StringIO(yaml_config))
+
+        assert app_config.int_attr_with_default == 5
+        assert app_config.upper_str_attr == 'LOWER'

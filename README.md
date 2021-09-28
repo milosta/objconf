@@ -39,6 +39,7 @@ python3 -m pip install objconf
 Inherit from this class when defining your application configuration.
 ```python
 from objconf import Config, Attribute
+import io
 
 # Define configuration
 class AppConfig(Config):
@@ -49,14 +50,25 @@ class AppConfig(Config):
     upper_str_attr = Attribute(str, transformer=str.upper)
     
 # Load configuration
-with open('config.yaml') as f:  # Call appropriate load_<format> factory method
-    app_config = AppConfig.load_yaml(f)
+yaml_config = '''
+simple_string_attr: string_value
+actual_bool_key: True
+int_over_ten: 42
+upper_str_attr: lower
+'''
+app_config = AppConfig.load_yaml(io.StringIO(yaml_config))
+
+assert app_config.int_attr_with_default == 5
+assert app_config.upper_str_attr == 'LOWER'
 ```
 
 #### Loading configuration
 The configuration is loaded during creation of the `Config` subclass instance specifying
-the configuration values for your application. The instance is created by the factory
-methods `load_<format>(stream: TextIO, extra_vals: ExtraVals = ExtraVals.WARNING) -> 'Config'`.
+the configuration values for your application. The instance is created by calling the corresponding
+factory method:
+```
+load_<format>(stream: TextIO, extra_vals: ExtraVals = ExtraVals.WARNING) -> 'Config'
+```
 
 Arguments:
 - `stream`: A file-like object containing configuration values in the corresponding
