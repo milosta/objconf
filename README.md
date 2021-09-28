@@ -36,12 +36,12 @@ python3 -m pip install objconf
 
 ### Config class
 `Config` is a base class for your configuration class.
-Inherit from this class when defining your application configuration.
+Inherit from Config when defining configuration for your application.
 ```python
 from objconf import Config, Attribute
 import io
 
-# Define configuration
+# Define the configuration
 class AppConfig(Config):
     simple_string_attr = Attribute(str)
     int_attr_with_default = Attribute(int, default=5)
@@ -49,7 +49,7 @@ class AppConfig(Config):
     int_over_ten = Attribute(int, validator=lambda x: x > 10)
     upper_str_attr = Attribute(str, transformer=str.upper)
     
-# Load configuration
+# Load the configuration
 yaml_config = '''
 simple_string_attr: string_value
 actual_bool_key: True
@@ -58,12 +58,13 @@ upper_str_attr: lower
 '''
 app_config = AppConfig.load_yaml(io.StringIO(yaml_config))
 
-assert app_config.int_attr_with_default == 5
-assert app_config.upper_str_attr == 'LOWER'
+# Use the configuration
+print(app_config.int_attr_with_default)  # 5
+print(app_config.upper_str_attr)  # 'LOWER'
 ```
 
 #### Loading configuration
-The configuration is loaded during creation of the `Config` subclass instance specifying
+The configuration is loaded during creation of the `Config` instance that defines
 the configuration values for your application. The instance is created by calling the corresponding
 factory method:
 ```
@@ -88,17 +89,17 @@ and modifying the behaviour of underlying parser.
 
 
 ### Attributes
-Attribute store the value in the owning class (Config) instance.
+Attribute stores the value in the owning class (Config) instance.
 Constructor has the following parameters:
 - ``type_``: The only required parameter - type of the attribute
     (`bool`, `str`, `int`, `list`(if supported), …).
     It is a callable that converts the value to the correct type.
     Some types might not be supported; e.g. the Python ini-like format
     does not support lists by default.
-- ``default``: Default value to use if not present in a configuration file.
+- ``default``: Default value to use if not present in the configuration file.
 - ``key``: Specify key in configuration file if different from attribute name.
 - ``validator``: Callable that takes the configuration value and checks whether 
-    it is valid - return `True`, or not - return `False`.
+    it is valid - return `True`, otherwise return `False`.
 - ``transformer``: Transform the value from configuration file. This happens
     after the type conversion but before the validation.
     Can be used for example for transforming paths

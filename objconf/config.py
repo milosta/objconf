@@ -19,7 +19,7 @@ class ExtraVals(Enum):
 class Config:
     """
     `Config` is a base class for your configuration class.
-    Inherit from this class when defining your application configuration.
+    Inherit from Config when defining configuration for your application.
     """
     @classmethod
     def load_yaml(cls, stream: TextIO, extra_vals: ExtraVals = ExtraVals.WARNING,
