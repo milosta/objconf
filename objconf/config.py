@@ -22,8 +22,8 @@ class Config:
     Inherit from this class when defining your application configuration.
     """
     @classmethod
-    def load_yaml(cls, stream: TextIO, loader=yaml.SafeLoader,
-                  extra_vals: ExtraVals = ExtraVals.WARNING) -> 'Config':
+    def load_yaml(cls, stream: TextIO, extra_vals: ExtraVals = ExtraVals.WARNING,
+                  loader=yaml.SafeLoader) -> 'Config':
         return cls.load_dict(yaml.load(stream, loader), extra_vals)
 
     @classmethod
@@ -32,8 +32,8 @@ class Config:
         return cls.load_dict(json.load(stream, **parser_kwargs), extra_vals)
 
     @classmethod
-    def load_ini(cls, stream: TextIO, sections: Optional[Iterable[str]] = None,
-                 extra_vals: ExtraVals = ExtraVals.WARNING, **parser_kwargs) -> 'Config':
+    def load_ini(cls, stream: TextIO, extra_vals: ExtraVals = ExtraVals.WARNING,
+                 sections: Optional[Iterable[str]] = None, **parser_kwargs) -> 'Config':
         cfgparser = configparser.ConfigParser(**parser_kwargs)
         cfgparser.read_file(stream)
         if sections is None:

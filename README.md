@@ -56,16 +56,17 @@ with open('config.yaml') as f:  # Call appropriate load_<format> factory method
 #### Loading configuration
 The configuration is loaded during creation of the `Config` subclass instance specifying
 the configuration values for your application. The instance is created by the factory
-methods `load_*`.
+methods `load_<format>(stream: TextIO, extra_vals: ExtraVals = ExtraVals.WARNING) -> 'Config'`.
 
-They all take `stream` parameter which is a file-like object with configuration values
-in the corresponding format. (Except `load_dict`, it takes a dictionary
-and  all other loading methods use it internally.)
-Another common parameter is `extra_vals` that specify behavior when encountering
-an unspecified attribute in the configuration.
+Arguments:
+- `stream`: A file-like object containing configuration values in the corresponding
+  format. (Except `load_dict`, it takes a dictionary
+  and  all other loading methods use it internally.)
+- `extra_vals`: It specifies behavior when encountering an undefined attribute in the configuration.
+  Defaults to _warning_, other options are _ignore_ and _error_.
 
-The loading functions take also other arguments specific for the format and modifying
-the behaviour of underlying parser.
+The loading functions take also other arguments specific for the configuration format
+and modifying the behaviour of underlying parser.
 
 ``load_yaml`` - Load configuration from YAML
 
