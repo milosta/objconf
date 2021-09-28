@@ -13,6 +13,7 @@ setup(
     version='0.3.0',
     description='Object configuration for Python projects',
     long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     url='https://github.com/milosta/objconf',
 
     author='Miloslav Stanek',
